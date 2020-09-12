@@ -1,0 +1,39 @@
+#import libraries
+
+import requests
+from bs4 import BeautifulSoup
+from urllib.request import urlopen
+from datetime import datetime
+from lxml.html import parse
+import time
+
+dataList = []
+
+#date_id = (datetime.today()).strftime('%Y%m%d%t') # Used to create the filename
+New_date_id = datetime.now().strftime("%Y%m%d-%H%M%S")
+
+with open('INPUT\myfile.txt') as urlList:
+    urls = (line for line in urlList)
+
+    for url in urls:
+        site = urlopen(url)   
+        soup = BeautifulSoup(site, "lxml")
+        for Newitem in soup.find_all("title"):
+            dataList.append(Newitem.text.strip())
+            for item in soup.find_all("li"):
+                dataList.append(item.text.strip())
+        print("Idle Mode ON!")
+        time.sleep(10)
+        print("Idle Mode OFF!")
+    
+#with open(date_id + 'data.txt', "w", encoding='utf-8') as fhandle:
+with open(New_date_id + "_"+ 'data.csv', 'w', newline='', encoding='utf-8') as csv_file:
+    for line in dataList:
+        #if len(line) >= 35:
+        line = line.strip()
+        line = line.strip("c. ")
+        line = line.strip("^ ")  
+        csv_file.write(f'{line} \n')
+        
+ print("Web-scraping complete.")
+
